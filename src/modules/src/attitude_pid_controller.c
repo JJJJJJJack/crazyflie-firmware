@@ -32,9 +32,9 @@
 #include "param.h"
 #include "log.h"
 
-#define ATTITUDE_LPF_CUTOFF_FREQ      15.0f
+#define ATTITUDE_LPF_CUTOFF_FREQ      30.0f
 #define ATTITUDE_LPF_ENABLE false
-#define ATTITUDE_RATE_LPF_CUTOFF_FREQ 30.0f
+#define ATTITUDE_RATE_LPF_CUTOFF_FREQ 100.0f
 #define ATTITUDE_RATE_LPF_ENABLE false
 
 
@@ -143,6 +143,11 @@ void attitudeControllerResetRollAttitudePID(void)
 void attitudeControllerResetPitchAttitudePID(void)
 {
     pidReset(&pidRoll);
+}
+
+void attitudeControllerResetYawAttitudePID(void)
+{
+    pidReset(&pidYaw);
 }
 
 void attitudeControllerResetAllPID(void)

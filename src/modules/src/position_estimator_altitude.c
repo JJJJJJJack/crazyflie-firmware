@@ -92,6 +92,8 @@ static void positionEstimateInternal(state_t* estimate, const sensorData_t* sens
     }
     // Use asl as base and add velocity changes.
     state->estimatedZ = filteredZ + (state->velocityFactor * state->velocityZ * dt);
+    // Jack hack use integrated acceleration Z as velocity.z
+    //state->estimatedZ = state->velocityZ;
   }
 
 

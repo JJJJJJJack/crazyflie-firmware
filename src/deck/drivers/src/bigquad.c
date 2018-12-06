@@ -43,9 +43,9 @@
 #include "task.h"
 
 #define BIGQUAD_BAT_VOLT_PIN       DECK_GPIO_MISO
-#define BIGQUAD_BAT_VOLT_MULT      7.8f
+#define BIGQUAD_BAT_VOLT_MULT      11.3f
 #define BIGQUAD_BAT_CURR_PIN       DECK_GPIO_SCK
-#define BIGQUAD_BAT_AMP_PER_VOLT   1.0f
+#define BIGQUAD_BAT_AMP_PER_VOLT   25.0f
 
 #ifdef ENABLE_BQ_DECK
 //Hardware configuration
@@ -81,10 +81,8 @@ static void bigquadInit(DeckInfo *info)
   DEBUG_PRINT("Switching to brushless.\n");
   motorsInit(motorMapBigQuadDeck);
   extRxInit();
-#ifdef BQ_DECK_ENABLE_PM
   pmEnableExtBatteryVoltMeasuring(BIGQUAD_BAT_VOLT_PIN, BIGQUAD_BAT_VOLT_MULT);
   pmEnableExtBatteryCurrMeasuring(BIGQUAD_BAT_CURR_PIN, BIGQUAD_BAT_AMP_PER_VOLT);
-#endif
 
 #ifdef BQ_DECK_ENABLE_OSD
   uart1Init(115200);
@@ -114,7 +112,7 @@ static const DeckDriver bigquad_deck = {
   .name = "bcBigQuad",
 
   .usedPeriph = DECK_USING_TIMER3 | DECK_USING_TIMER14,
-  .usedGpio = DECK_USING_PA2 | DECK_USING_PA3 | DECK_USING_PB4 | DECK_USING_PB5 | DECK_USING_PA7,
+  .usedGpio = DECK_USING_PA2 | DECK_USING_PA3 | DECK_USING_PB4 | DECK_USING_PB5 | DECK_GPIO_MISO | DECK_GPIO_SCK | DECK_USING_PA7,
   .init = bigquadInit,
   .test = bigquadTest,
 };
