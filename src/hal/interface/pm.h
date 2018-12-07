@@ -151,7 +151,7 @@ float pmMeasureExtBatteryVoltage(void);
 /**
  * Enable or disable external battery current measuring.
  */
-void pmEnableExtBatteryCurrMeasuring(uint8_t pin, float ampPerVolt);
+void pmEnableExtBatteryCurrMeasuring(uint8_t pin, float ampPerVolt, float ampNeutral);
 
 /**
  * Measure an external current.

@@ -43,9 +43,10 @@
 #include "task.h"
 
 #define BIGQUAD_BAT_VOLT_PIN       DECK_GPIO_MISO
-#define BIGQUAD_BAT_VOLT_MULT      11.3f
+#define BIGQUAD_BAT_VOLT_MULT      11.07f
 #define BIGQUAD_BAT_CURR_PIN       DECK_GPIO_SCK
 #define BIGQUAD_BAT_AMP_PER_VOLT   25.0f
+#define BIGQUAD_BAT_AMP_NEUTRAL    2.671f
 
 #ifdef ENABLE_BQ_DECK
 //Hardware configuration
@@ -82,7 +83,7 @@ static void bigquadInit(DeckInfo *info)
   motorsInit(motorMapBigQuadDeck);
   extRxInit();
   pmEnableExtBatteryVoltMeasuring(BIGQUAD_BAT_VOLT_PIN, BIGQUAD_BAT_VOLT_MULT);
-  pmEnableExtBatteryCurrMeasuring(BIGQUAD_BAT_CURR_PIN, BIGQUAD_BAT_AMP_PER_VOLT);
+  pmEnableExtBatteryCurrMeasuring(BIGQUAD_BAT_CURR_PIN, BIGQUAD_BAT_AMP_PER_VOLT, BIGQUAD_BAT_AMP_NEUTRAL);
 
 #ifdef BQ_DECK_ENABLE_OSD
   uart1Init(115200);
