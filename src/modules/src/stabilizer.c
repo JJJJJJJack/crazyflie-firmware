@@ -138,7 +138,7 @@ static void stabilizerTask(void* param)
     if (emergencyStop) {
       powerStop();
     } else {
-      powerDistribution(&control);
+      powerDistribution(&control, &setpoint);
     }
 
     tick++;

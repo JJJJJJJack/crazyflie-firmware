@@ -42,6 +42,7 @@
 
 static uint16_t motorsBLConvBitsTo16(uint16_t bits);
 static uint16_t motorsBLConv16ToBits(uint16_t bits);
+static uint16_t motorsSERVOConv16ToBits(uint16_t bits);
 static uint16_t motorsConvBitsTo16(uint16_t bits);
 static uint16_t motorsConv16ToBits(uint16_t bits);
 
@@ -71,6 +72,11 @@ static uint16_t motorsBLConvBitsTo16(uint16_t bits)
 static uint16_t motorsBLConv16ToBits(uint16_t bits)
 {
   return (MOTORS_BL_PWM_CNT_FOR_HIGH + ((bits * MOTORS_BL_PWM_CNT_FOR_HIGH) / 0xFFFF));
+}
+
+static uint16_t motorsSERVOConv16ToBits(uint16_t bits)
+{
+  return (SERVO_PWM_CNT_FOR_HIGH + ((bits * SERVO_PWM_CNT_FOR_HIGH) / 0xFFFF));
 }
 
 static uint16_t motorsConvBitsTo16(uint16_t bits)
@@ -223,6 +229,10 @@ void motorsSetRatio(uint32_t id, uint16_t ithrust)
     if (motorMap[id]->drvType == BRUSHLESS)
     {
       motorMap[id]->setCompare(motorMap[id]->tim, motorsBLConv16ToBits(ratio));
+    }
+    else if (motorMap[id]->drvType == SERVO)
+    {
+      motorMap[id]->setCompare(motorMap[id]->tim, motorsSERVOConv16ToBits(ratio));
     }
     else
     {

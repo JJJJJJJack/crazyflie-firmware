@@ -356,6 +356,28 @@ static const MotorPerifDef DECK_RX2_TIM2 =
 };
 
 // Deck RX2, PA3, TIM5_CH4
+static const MotorPerifDef DECK_RX2_TIM5_SERVO =
+{
+    .drvType       = BRUSHLESS,
+    .gpioPerif     = RCC_AHB1Periph_GPIOA,
+    .gpioPort      = GPIOA,
+    .gpioPin       = GPIO_Pin_3,
+    .gpioPinSource = GPIO_PinSource3,
+    .gpioOType     = GPIO_OType_OD,
+    .gpioAF        = GPIO_AF_TIM5,
+    .timPerif      = RCC_APB1Periph_TIM5,
+    .tim           = TIM5,
+    .timPolarity   = TIM_OCPolarity_High,
+    .timDbgStop    = DBGMCU_TIM5_STOP,
+    .timPeriod     = SERVO_PWM_PERIOD,
+    .timPrescaler  = SERVO_PWM_PRESCALE,
+    .setCompare    = TIM_SetCompare4,
+    .getCompare    = TIM_GetCapture4,
+    .ocInit        = TIM_OC4Init,
+    .preloadConfig = TIM_OC4PreloadConfig,
+};
+
+// Deck RX2, PA3, TIM5_CH4
 static const MotorPerifDef DECK_RX2_TIM5 =
 {
     .drvType       = BRUSHLESS,
@@ -421,6 +443,28 @@ static const MotorPerifDef DECK_IO2 =
     .preloadConfig = TIM_OC2PreloadConfig,
 };
 
+// Deck IO2, PB5, TIM3_CH2
+static const MotorPerifDef DECK_IO2_TIM3_SERVO =
+{
+    .drvType       = SERVO,
+    .gpioPerif     = RCC_AHB1Periph_GPIOB,
+    .gpioPort      = GPIOB,
+    .gpioPin       = GPIO_Pin_5,
+    .gpioPinSource = GPIO_PinSource5,
+    .gpioOType     = GPIO_OType_OD,
+    .gpioAF        = GPIO_AF_TIM3,
+    .timPerif      = RCC_APB1Periph_TIM3,
+    .tim           = TIM3,
+    .timPolarity   = TIM_OCPolarity_High,
+    .timDbgStop    = DBGMCU_TIM3_STOP,
+    .timPeriod     = SERVO_PWM_PERIOD,
+    .timPrescaler  = SERVO_PWM_PRESCALE,
+    .setCompare    = TIM_SetCompare2,
+    .getCompare    = TIM_GetCapture2,
+    .ocInit        = TIM_OC2Init,
+    .preloadConfig = TIM_OC2PreloadConfig,
+};
+
 // Deck IO3, PB4, TIM3_CH1
 static const MotorPerifDef DECK_IO3 =
 {
@@ -437,6 +481,28 @@ static const MotorPerifDef DECK_IO3 =
     .timDbgStop    = DBGMCU_TIM3_STOP,
     .timPeriod     = MOTORS_BL_PWM_PERIOD,
     .timPrescaler  = MOTORS_BL_PWM_PRESCALE,
+    .setCompare    = TIM_SetCompare1,
+    .getCompare    = TIM_GetCapture1,
+    .ocInit        = TIM_OC1Init,
+    .preloadConfig = TIM_OC1PreloadConfig,
+};
+
+// Deck IO3, PB4, TIM3_CH1
+static const MotorPerifDef DECK_IO3_TIM3_SERVO =
+{
+    .drvType       = SERVO,
+    .gpioPerif     = RCC_AHB1Periph_GPIOB,
+    .gpioPort      = GPIOB,
+    .gpioPin       = GPIO_Pin_4,
+    .gpioPinSource = GPIO_PinSource4,
+    .gpioOType     = GPIO_OType_OD,
+    .gpioAF        = GPIO_AF_TIM3,
+    .timPerif      = RCC_APB1Periph_TIM3,
+    .tim           = TIM3,
+    .timPolarity   = TIM_OCPolarity_High,
+    .timDbgStop    = DBGMCU_TIM3_STOP,
+    .timPeriod     = SERVO_PWM_PERIOD,
+    .timPrescaler  = SERVO_PWM_PRESCALE,
     .setCompare    = TIM_SetCompare1,
     .getCompare    = TIM_GetCapture1,
     .ocInit        = TIM_OC1Init,
@@ -530,8 +596,13 @@ const MotorPerifDef* motorMapDefaultBrushed[NBR_OF_MOTORS] =
 const MotorPerifDef* motorMapBigQuadDeck[NBR_OF_MOTORS] =
 {
   &DECK_TX2_TIM2,
-  &DECK_IO3,
-  &DECK_IO2,
+  // Jack on 01/09/2018
+  // modify M2 and M3 to control servo instead of BLDC
+  //&DECK_IO3,
+  &DECK_IO3_TIM3_SERVO,
+  //&DECK_IO2,
+  &DECK_IO2_TIM3_SERVO,
+
   &DECK_RX2_TIM2
 };
 

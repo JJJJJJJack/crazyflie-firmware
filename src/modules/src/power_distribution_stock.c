@@ -32,6 +32,9 @@
 #include "motors.h"
 
 static bool motorSetEnable = false;
+static bool EnableServo = true;
+int16_t ServoLeftK = 1000;
+int16_t ServoRightK = 1000;
 
 static struct {
   uint32_t m1;
@@ -71,7 +74,7 @@ void powerStop()
   motorsSetRatio(MOTOR_M4, 0);
 }
 
-void powerDistribution(const control_t *control)
+void powerDistribution(const control_t *control, setpoint_t *setpoint)
 {
   #ifdef QUAD_FORMATION_X
     int16_t r = control->roll / 2.0f;
@@ -100,10 +103,29 @@ void powerDistribution(const control_t *control)
   }
   else
   {
-    motorsSetRatio(MOTOR_M1, motorPower.m1);
-    motorsSetRatio(MOTOR_M2, motorPower.m2);
-    motorsSetRatio(MOTOR_M3, motorPower.m3);
-    motorsSetRatio(MOTOR_M4, motorPower.m4);
+    if(EnableServo){
+      /*
+      	use output port M1 M4 for motor control
+      	 4  1
+      	(3  2)
+      	Port M2 M3 are used for servo control
+       */
+      motorPower.m1 = limitThrust(control->thrust);
+      motorsSetRatio(MOTOR_M1, motorPower.m1);
+      motorPower.m4 = limitThrust(control->thrust);
+      motorsSetRatio(MOTOR_M4, motorPower.m4);
+
+
+      motorPower.m2 = 32767 + ServoRightK * (int16_t)setpoint->attitude.roll;
+      motorsSetRatio(MOTOR_M2, motorPower.m2);
+      motorPower.m3 = 32767 + ServoLeftK * (int16_t)setpoint->attitude.pitch;
+      motorsSetRatio(MOTOR_M3, motorPower.m3);
+    }else{
+      motorsSetRatio(MOTOR_M1, motorPower.m1);
+      motorsSetRatio(MOTOR_M2, motorPower.m2);
+      motorsSetRatio(MOTOR_M3, motorPower.m3);
+      motorsSetRatio(MOTOR_M4, motorPower.m4);
+    }
   }
 }
 
@@ -113,7 +135,14 @@ PARAM_ADD(PARAM_UINT16, m1, &motorPowerSet.m1)
 PARAM_ADD(PARAM_UINT16, m2, &motorPowerSet.m2)
 PARAM_ADD(PARAM_UINT16, m3, &motorPowerSet.m3)
 PARAM_ADD(PARAM_UINT16, m4, &motorPowerSet.m4)
-PARAM_GROUP_STOP(ring)
+PARAM_GROUP_STOP(motorPowerSet)
+
+PARAM_GROUP_START(servoSet)
+PARAM_ADD(PARAM_UINT8, servoEnable, &EnableServo)
+PARAM_ADD(PARAM_FLOAT, servoLeftK,   &ServoLeftK)
+PARAM_ADD(PARAM_FLOAT, servoRightK,  &ServoRightK)
+PARAM_GROUP_STOP(servoSet)
+
 
 LOG_GROUP_START(motor)
 LOG_ADD(LOG_INT32, m4, &motorPower.m4)

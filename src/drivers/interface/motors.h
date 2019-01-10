@@ -95,6 +95,16 @@
   #define MOTORS_BL_PWM_PERIOD         MOTORS_BL_PWM_CNT_FOR_PERIOD
   #define MOTORS_BL_PWM_PRESCALE       (uint16_t)(MOTORS_BL_PWM_PRESCALE_RAW - 1)
   #define MOTORS_BL_POLARITY           TIM_OCPolarity_Low
+/**
+ * Add different PWM frequency for servo control
+ */
+  #define SERVO_PERIOD 0.02   // 20ms = 50Hz
+  #define SERVO_PWM_PRESCALE_RAW   (uint32_t)((TIM_CLOCK_HZ/0xFFFF) * SERVO_PERIOD + 1) // +1 is to not end up above 0xFFFF in the end
+  #define SERVO_PWM_CNT_FOR_PERIOD (uint32_t)(TIM_CLOCK_HZ * SERVO_PERIOD / SERVO_PWM_PRESCALE_RAW)
+  #define SERVO_PWM_CNT_FOR_HIGH    (uint32_t)(TIM_CLOCK_HZ * 0.001 / SERVO_PWM_PRESCALE_RAW)
+  #define SERVO_PWM_PERIOD         SERVO_PWM_CNT_FOR_PERIOD
+  #define SERVO_PWM_PRESCALE       (uint16_t)(SERVO_PWM_PRESCALE_RAW - 1)
+  #define SERVO_POLARITY           TIM_OCPolarity_Low
 #endif
 
 #define NBR_OF_MOTORS 4
@@ -169,7 +179,8 @@
 typedef enum
 {
   BRUSHED,
-  BRUSHLESS
+  BRUSHLESS,
+  SERVO
 } motorsDrvType;
 
 typedef struct
