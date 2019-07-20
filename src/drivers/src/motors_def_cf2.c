@@ -597,11 +597,11 @@ const MotorPerifDef* motorMapBigQuadDeck[NBR_OF_MOTORS] =
 {
   &DECK_TX2_TIM2,
   // Jack on 01/09/2018
-  // modify M2 and M3 to control servo instead of BLDC
-  //&DECK_IO3,
-  &DECK_IO3_TIM3_SERVO,
-  //&DECK_IO2,
-  &DECK_IO2_TIM3_SERVO,
+  // modify M2 and M3 to control servo instead of BLDC (using servo)
+  &DECK_IO3,
+  //&DECK_IO3_TIM3_SERVO,
+  &DECK_IO2,
+  //&DECK_IO2_TIM3_SERVO,
 
   &DECK_RX2_TIM2
 };

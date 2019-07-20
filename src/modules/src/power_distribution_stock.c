@@ -32,9 +32,10 @@
 #include "motors.h"
 
 static bool motorSetEnable = false;
-static bool EnableServo = true;
+static bool EnableServo = false;
 int16_t ServoLeftK = 1000;
 int16_t ServoRightK = 1000;
+float ServoLeftAngle = 0, ServoRightAngle = 0;
 
 static struct {
   uint32_t m1;
@@ -116,9 +117,9 @@ void powerDistribution(const control_t *control, setpoint_t *setpoint)
       motorsSetRatio(MOTOR_M4, motorPower.m4);
 
 
-      motorPower.m2 = 32767 + ServoRightK * (int16_t)setpoint->attitude.roll;
+      motorPower.m2 = limitThrust(32767 + ServoRightK * (int16_t)ServoRightAngle);
       motorsSetRatio(MOTOR_M2, motorPower.m2);
-      motorPower.m3 = 32767 + ServoLeftK * (int16_t)setpoint->attitude.pitch;
+      motorPower.m3 = limitThrust(32767 + ServoLeftK * (int16_t)ServoLeftAngle);
       motorsSetRatio(MOTOR_M3, motorPower.m3);
     }else{
       motorsSetRatio(MOTOR_M1, motorPower.m1);
@@ -139,8 +140,8 @@ PARAM_GROUP_STOP(motorPowerSet)
 
 PARAM_GROUP_START(servoSet)
 PARAM_ADD(PARAM_UINT8, servoEnable, &EnableServo)
-PARAM_ADD(PARAM_FLOAT, servoLeftK,   &ServoLeftK)
-PARAM_ADD(PARAM_FLOAT, servoRightK,  &ServoRightK)
+PARAM_ADD(PARAM_FLOAT, servoLeftAngle,   &ServoLeftAngle)
+PARAM_ADD(PARAM_FLOAT, servoRightAngle,  &ServoRightAngle)
 PARAM_GROUP_STOP(servoSet)
 
 

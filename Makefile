@@ -235,7 +235,7 @@ ifeq ($(USE_FPU), 1)
 	CFLAGS += -fno-math-errno -DARM_MATH_CM4 -D__FPU_PRESENT=1 -D__TARGET_FPU_VFP
 else
 	ifeq ($(PLATFORM), CF2)
-		PROCESSOR = -mcpu=cortex-m4 -mthumb
+		PROCESSOR = -mcpu=cortex-m4 -mthumb -mfloat-abi=hard
 	endif
 endif
 
