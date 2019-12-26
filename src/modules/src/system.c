@@ -151,19 +151,26 @@ void systemTask(void *arg)
 
   //Init the high-levels modules
   systemInit();
+  DEBUG_PRINT("JACK: Done system initializing!\n");
   commInit();
+  DEBUG_PRINT("JACK: Done comm initializing!\n");
   commanderInit();
+  DEBUG_PRINT("JACK: Done commander initializing!\n");
 
   StateEstimatorType estimator = anyEstimator;
   deckInit();
+  DEBUG_PRINT("JACK: Done deck initializing!\n");
   estimator = deckGetRequiredEstimator();
   stabilizerInit(estimator);
+  DEBUG_PRINT("JACK: Done stabilizer initializing!\n");
   if (deckGetRequiredLowInterferenceRadioMode())
   {
     platformSetLowInterferenceRadioMode();
   }
   soundInit();
+  DEBUG_PRINT("JACK: Done sound initializing!\n");
   memInit();
+  DEBUG_PRINT("JACK: Done mem initializing!\n");
 
 #ifdef PROXIMITY_ENABLED
   proximityInit();
@@ -171,14 +178,32 @@ void systemTask(void *arg)
 
   //Test the modules
   pass &= systemTest();
+  if (pass)
+    DEBUG_PRINT("Success in system.\n");
   pass &= configblockTest();
+  if (pass)
+    DEBUG_PRINT("Success in config.\n");
   pass &= commTest();
+  if (pass)
+    DEBUG_PRINT("Success in comm.\n");
   pass &= commanderTest();
+  if (pass)
+    DEBUG_PRINT("Success in commander.\n");
   pass &= stabilizerTest();
+  if (pass)
+    DEBUG_PRINT("Success in stabilizer.\n");
   pass &= deckTest();
+  if (pass)
+    DEBUG_PRINT("Success in deck.\n");
   pass &= soundTest();
+  if (pass)
+    DEBUG_PRINT("Success in sound.\n");
   pass &= memTest();
+  if (pass)
+    DEBUG_PRINT("Success in mem.\n");
   pass &= watchdogNormalStartTest();
+  if (pass)
+    DEBUG_PRINT("Success in watchdog.\n");
 
   //Start the firmware
   if(pass)
