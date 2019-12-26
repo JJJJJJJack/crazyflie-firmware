@@ -32,10 +32,11 @@
 #include "motors.h"
 
 static bool motorSetEnable = false;
-static bool EnableServo = false;
+static bool EnableServo = false, EnablePartialGE = false;
 int16_t ServoLeftK = 1000;
 int16_t ServoRightK = 1000;
 float ServoLeftAngle = 0, ServoRightAngle = 0;
+float PartialGEm1 = 1.0, PartialGEm2 = 1.0, PartialGEm3 = 1.0, PartialGEm4 = 1.0;
 
 static struct {
   uint32_t m1;
@@ -121,6 +122,19 @@ void powerDistribution(const control_t *control, setpoint_t *setpoint)
       motorsSetRatio(MOTOR_M2, motorPower.m2);
       motorPower.m3 = limitThrust(32767 + ServoLeftK * (int16_t)ServoLeftAngle);
       motorsSetRatio(MOTOR_M3, motorPower.m3);
+    }else if(EnablePartialGE){
+      PartialGEm1 = PartialGEm1<1?1:PartialGEm1;
+      PartialGEm2 = PartialGEm2<1?1:PartialGEm2;
+      PartialGEm3 = PartialGEm3<1?1:PartialGEm3;
+      PartialGEm4 = PartialGEm4<1?1:PartialGEm4;
+      motorPower.m1 = limitThrust((int32_t)((float)motorPower.m1/PartialGEm1));
+      motorPower.m2 = limitThrust((int32_t)((float)motorPower.m2/PartialGEm2));
+      motorPower.m3 = limitThrust((int32_t)((float)motorPower.m3/PartialGEm3));
+      motorPower.m4 = limitThrust((int32_t)((float)motorPower.m4/PartialGEm4));
+      motorsSetRatio(MOTOR_M1, motorPower.m1);
+      motorsSetRatio(MOTOR_M2, motorPower.m2);
+      motorsSetRatio(MOTOR_M3, motorPower.m3);
+      motorsSetRatio(MOTOR_M4, motorPower.m4);
     }else{
       motorsSetRatio(MOTOR_M1, motorPower.m1);
       motorsSetRatio(MOTOR_M2, motorPower.m2);
@@ -144,6 +158,20 @@ PARAM_ADD(PARAM_FLOAT, servoLeftAngle,   &ServoLeftAngle)
 PARAM_ADD(PARAM_FLOAT, servoRightAngle,  &ServoRightAngle)
 PARAM_GROUP_STOP(servoSet)
 
+PARAM_GROUP_START(partialGE)
+PARAM_ADD(PARAM_UINT8, partialEnable, &EnablePartialGE)
+PARAM_ADD(PARAM_FLOAT, partialGEm1,   &PartialGEm1)
+PARAM_ADD(PARAM_FLOAT, partialGEm2,   &PartialGEm2)
+PARAM_ADD(PARAM_FLOAT, partialGEm3,   &PartialGEm3)
+PARAM_ADD(PARAM_FLOAT, partialGEm4,   &PartialGEm4)
+PARAM_GROUP_STOP(partialGE)
+
+LOG_GROUP_START(partialGE)
+LOG_ADD(LOG_FLOAT, m1, &PartialGEm1)
+LOG_ADD(LOG_FLOAT, m2, &PartialGEm2)
+LOG_ADD(LOG_FLOAT, m3, &PartialGEm3)
+LOG_ADD(LOG_FLOAT, m4, &PartialGEm4)
+LOG_GROUP_STOP(partialGE)
 
 LOG_GROUP_START(motor)
 LOG_ADD(LOG_INT32, m4, &motorPower.m4)
